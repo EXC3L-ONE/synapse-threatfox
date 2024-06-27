@@ -89,7 +89,7 @@ commands:
       - [ex, threatfox, user]
     cmdargs:
       - - query
-        - type: string
+        - type: str
           help: Yield the newly created nodes instead of the inbound nodes
       - - --yield
         - type: bool

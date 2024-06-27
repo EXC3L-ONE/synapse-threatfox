@@ -127,7 +127,7 @@
           "query",
           {
             "help": "Yield the newly created nodes instead of the inbound nodes",
-            "type": "string"
+            "type": "str"
           }
         ],
         [
