@@ -20,7 +20,8 @@ modules:
   - name: ex.threatfox.privsep
     asroot:perms:
       - [ex, threatfox, user]
-          
+
+commands:
   - name: ex.threatfox.setup.tagprefix
     descr: Set the tag prefix used when recording ThreatFox tags. Defaults to `rep.threatfox`.
     perms:
@@ -31,7 +32,6 @@ modules:
           default: rep.threatfox
           help: The tag prefix to use.
 
-commands:
   - name: ex.threatfox.ingest.indicators
     descr: Ingests recent IOCs from ThreatFox
     perms:
@@ -88,7 +88,7 @@ commands:
     perms:
       - [ex, threatfox, user]
     cmdargs:
-      - - --query
+      - - query
         - type: string
           help: Yield the newly created nodes instead of the inbound nodes
       - - --yield
