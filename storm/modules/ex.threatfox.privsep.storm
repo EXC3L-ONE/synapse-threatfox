@@ -17,7 +17,7 @@ function setTagPrefix(prefix) {
     $lib.globals.set("ex.threatfox:tag-prefix", $prefix)
 }
 
-function makethreatfoxAPIRequest(post_data) {
+function makeThreatfoxAPIRequest(post_data) {
 
     $url = "https://threatfox-api.abuse.ch/api/v1/"
 
