@@ -1,5 +1,5 @@
 name: ex-threatfox
-version: 1.0.0
+version: 1.0.1
 synapse_minversion: [2, 140, 0]
 desc: The ex-threatfox package provides an interface to ingest indicators and malware families from the ThreatFox API.
 

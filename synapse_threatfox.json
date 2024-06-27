@@ -240,7 +240,7 @@
   "modules": [
     {
       "name": "ex.threatfox.api",
-      "storm": "$privsep = $lib.import(ex.threatfox.privsep, debug=$lib.debug)\n\n// Fetch all malware profiles from Malpedia\nfunction fetchMalwareProfiles() {\n    $post_data = ({ \"query\": \"malware_list\" })\n    return($privsep.makeThreatfoxAPIRequest($post_data))\n}\n\n// Fetch all actor profiles from Malpedia\nfunction fetchIndicators(days_back) {\n    $post_data = ({ \"query\": \"get_iocs\", \"days\": $days_back })\n    return($privsep.makeThreatfoxAPIRequest($post_data))\n}\n\n// Fetch all indicators from Malpedia\nfunction enrichIndicator(query) {\n    $post_data = ({ \"query\": \"search_ioc\", \"search_term\": $query })\n    return($privsep.makeThreatfoxAPIRequest($post_data))\n}"
+      "storm": "$privsep = $lib.import(ex.threatfox.privsep, debug=$lib.debug)\n\nfunction fetchMalwareProfiles() {\n    $post_data = ({ \"query\": \"malware_list\" })\n    return($privsep.makeThreatfoxAPIRequest($post_data))\n}\n\nfunction fetchIndicators(days_back) {\n    $post_data = ({ \"query\": \"get_iocs\", \"days\": $days_back })\n    return($privsep.makeThreatfoxAPIRequest($post_data))\n}\n\nfunction enrichIndicator(query) {\n    $post_data = ({ \"query\": \"search_ioc\", \"search_term\": $query })\n    return($privsep.makeThreatfoxAPIRequest($post_data))\n}"
     },
     {
       "asroot:perms": [
@@ -290,6 +290,6 @@
   "version": [
     1,
     0,
-    0
+    1
   ]
 }
