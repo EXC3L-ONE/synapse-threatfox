@@ -255,6 +255,22 @@
     }
   ],
   "name": "ex-threatfox",
+  "optic": {
+    "actions": [
+      {
+        "descr": "Lookup the observable in ThreatFox to enrich with relevant indicators",
+        "forms": [
+          "inet:url",
+          "inet:fqdn",
+          "hash:sha256",
+          "hash:md5",
+          "inet:server"
+        ],
+        "name": "ThreatFox Enrich",
+        "storm": "ex.threatfox.enrich"
+      }
+    ]
+  },
   "perms": [
     {
       "desc": "Allows a user to leverage the ex-threatfox package",

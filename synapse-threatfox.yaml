@@ -147,3 +147,10 @@ commands:
         - hash:sha256
         - hash:md5
         - inet:server
+
+optic:
+    actions:
+      - name: ThreatFox Enrich
+        storm: ex.threatfox.enrich
+        descr: Lookup the observable in ThreatFox to enrich with relevant indicators
+        forms: [ inet:url, inet:fqdn, hash:sha256, hash:md5, inet:server ]
