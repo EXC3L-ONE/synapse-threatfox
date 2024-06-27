@@ -86,7 +86,7 @@ function parseIndicators(data, no_refs) {
         }}
 
         if ($no_refs) { 
-            return() 
+            return($lib.null) 
         } else {
 
             if ($ioc.reference != "" and $ioc.reference != $lib.null) {
