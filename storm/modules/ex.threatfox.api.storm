@@ -1,0 +1,19 @@
+$privsep = $lib.import(ex.threatfox.privsep, debug=$lib.debug)
+
+// Fetch all malware profiles from Malpedia
+function fetchMalwareProfiles() {
+    $post_data = ({ "query": "malware_list" })
+    return($privsep.makeMalpediaAPIRequest($post_data))
+}
+
+// Fetch all actor profiles from Malpedia
+function fetchIndicators(days_back) {
+    $post_data = ({ "query": "get_iocs", "days": $days_back })
+    return($privsep.makeMalpediaAPIRequest($post_data))
+}
+
+// Fetch all indicators from Malpedia
+function enrichIndicator(query) {
+    $post_data = ({ "query": "search_ioc", "search_term": $query }))
+    return($privsep.makeMalpediaAPIRequest($post_data))
+}

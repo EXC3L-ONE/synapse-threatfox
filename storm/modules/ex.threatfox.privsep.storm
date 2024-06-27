@@ -1,0 +1,106 @@
+function getMetaSource() {
+    [ meta:source=$lib.guid("threatfox", "ex", "powerup") :name="threatfox" ]
+    return($node)
+}
+
+function getTagPrefix() {
+    return($lib.globals.get("ex.threatfox:tag-prefix", default=rep.threatfox))
+}
+
+function setTagPrefix(prefix) {
+    ($ok, $norm) = $lib.trycast(syn:tag:part, $prefix)
+    if (not $ok) {
+        $lib.warn("failed to set tag prefix, invalid value: {s}", s=$prefix)
+        return($lib.null)
+    }
+
+    $lib.globals.set("ex.threatfox:tag-prefix", $prefix)
+}
+
+function makethreatfoxAPIRequest(post_data) {
+
+    $url = "https://threatfox-api.abuse.ch/api/v1/"
+
+    $resp = $lib.inet.http.post($url, json=$post_data)
+
+    if ($resp.code != 200) { $lib.exit("ThreatFox API request failed with HTTP code: {code}", code=$resp.code) }
+
+    $json = $resp.body.json()
+
+    if ($json.query_status != "ok") { $lib.exit("Something went wrong with the API query, received non-ok response: {query_status}", query_status=$json.query_status) }
+
+    return($json)
+}
+
+function parseMalwareProfiles(data) {
+
+    $srcnode = $getMetaSource()
+
+    for $family in $data.data {
+        $malname = $family.0
+        $tool_node = $lib.gen.riskToolSoftware($malname, "threatfox")
+        $alt_names = ($family.1.malware_printable,)
+        $tag = `{$getTagPrefix()}.mal.{$malname}`
+
+        if ($family.1.malware_alias != $lib.null) {
+            $alt_names.extend($family.1.malware_alias.split(","))
+        }
+        
+        [risk:tool:software=$tool_node :soft:names=($alt_names) :tag=$tag]
+
+        [<(seen)+ { yield $srcnode }]
+    }
+}
+
+
+function parseIndicators(data, no_refs) {
+
+    $srcnode = $getMetaSource()
+
+    for $ioc in $data.data {
+        switch $ioc.ioc_type {
+            "domain": { ($ok, $fqdn) = $lib.trycast(inet:fqdn, $ioc.ioc) if ($ok) { [inet:fqdn = $fqdn] } }
+            "url": { ($ok, $url) = $lib.trycast(inet:url, $ioc.ioc) if ($ok) { [inet:url = $url] } }
+            "sha256_hash": { ($ok, $sha256) = $lib.trycast(hash:sha256, $ioc.ioc) if ($ok) { [hash:sha256 = $sha256] } }
+            "md5_hash": { ($ok, $md5) = $lib.trycast(hash:md5, $ioc.ioc) if ($ok) { [hash:md5 = $md5] } }
+            "ip:port": { $val = $lib.str.concat("tcp://", $ioc.ioc)  ($ok, $serv) = $lib.trycast(inet:server, $val) if ($ok) { [inet:server =  $serv]} }
+        }
+
+        if ($ioc.first_seen_utc != $lib.null) { [.seen=$ioc.first_seen_utc] }
+        if ($ioc.last_seen_utc != $lib.null) { [.seen=$ioc.last_seen_utc] }
+
+        [<(seen)+ { yield $srcnode }]
+
+        $confidence =  `{$getTagPrefix()}.confidence.{$ioc.confidence_level}`
+        [+#$confidence]
+
+        $malname = `{$getTagPrefix()}.mal.{$ioc.malware}`
+        [+#$malname]
+
+        $type = `{$getTagPrefix()}.type.{$ioc.threat_type}`
+        [+#$type]
+        
+        for $tag in $ioc.tags { ($ok, $tag) = $lib.trycast(syn:tag, $tag) if ($ok) {
+            $tag = `{$getTagPrefix()}.tag.{$tag}`
+            [+#$tag] 
+        }}
+
+        if ($no_refs) { 
+            return() 
+        } else {
+
+            if ($ioc.reference != "" and $ioc.reference != $lib.null) {
+                [<(refs)+ {[inet:url=$ioc.reference]}]
+            }
+
+            [<(refs)+ {
+                [inet:web:action=($ioc.id, $ioc.reporter)
+                    :acct={[inet:web:acct=("twitter.com", $ioc.reporter)]}
+                    :act="Posted IOC on ThreatFox"
+                ]
+                if ($ioc.first_seen_utc != $lib.null) {[:time=$ioc.first_seen_utc]}
+            }]
+        }
+
+    }
+}

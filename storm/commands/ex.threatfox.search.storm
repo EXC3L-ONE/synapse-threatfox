@@ -1,0 +1,15 @@
+init {
+    $api = $lib.import(ex.threatfox.api, debug=$lib.debug)
+    $privsep = $lib.import(ex.threatfox.privsep, debug=$lib.debug)
+}
+
+if ($cmdopts.query = $lib.false) {
+    $lib.exit("No query provided")
+}
+
+$data = $lib.false
+$data = $api.enrichIndicator($cmdopts.query)
+
+if ($data) {
+    divert $cmdopts.yield $privsep.parseIndicators($data)
+}

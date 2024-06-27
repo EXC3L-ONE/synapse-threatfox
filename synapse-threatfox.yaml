@@ -1,0 +1,149 @@
+name: ex-threatfox
+version: 1.0.0
+synapse_minversion: [2, 140, 0]
+desc: The ex-threatfox package provides an interface to ingest indicators and malware families from the ThreatFox API.
+
+author:
+  url: https://github.com/EXC3L-ONE
+  name: EXC3L
+
+genopts:
+  dotstorm: true
+
+perms:
+  - perm: [ex, threatfox, user]
+    desc: Allows a user to leverage the ex-threatfox package
+    gate: cortex
+
+modules:
+  - name: ex.threatfox.api
+  - name: ex.threatfox.privsep
+    asroot:perms:
+      - [ex, threatfox, user]
+          
+  - name: ex.threatfox.setup.tagprefix
+    descr: Set the tag prefix used when recording ThreatFox tags. Defaults to `rep.threatfox`.
+    perms:
+      - [ex, threatfox, user]
+    cmdargs:
+      - - tagname
+        - type: str
+          default: rep.threatfox
+          help: The tag prefix to use.
+
+commands:
+  - name: ex.threatfox.ingest.indicators
+    descr: Ingests recent IOCs from ThreatFox
+    perms:
+      - [ex, threatfox, user]
+    cmdargs:
+      - - --yield
+        - type: bool
+          default: false
+          action: store_true
+          help: Yield the newly created nodes
+      - - --since-days
+        - type: int
+          default: 7
+          help: Specify since when the results should be ingested. Defaults the 7 days, minimum 1
+      - - --debug
+        - type: bool
+          default: false
+          action: store_true
+          help: Show verbose debug output.
+      - - --no-refs
+        - type: bool
+          default: false
+          action: store_true
+          help: Do not ingest the references for ingested indicators (i.e. do not create inet:url nodes)
+    forms:
+      output:
+        - inet:fqdn
+        - inet:url
+        - hash:sha256
+        - hash:md5
+        - inet:server
+
+  - name: ex.threatfox.ingest.malware
+    descr: Ingest malware family information from ThreatFox
+    perms:
+      - [ex, threatfox, user]
+    cmdargs:
+      - - --yield
+        - type: bool
+          default: false
+          action: store_true
+          help: Yield the newly created nodes
+      - - --debug
+        - type: bool
+          default: false
+          action: store_true
+          help: Show verbose debug output.
+    forms:
+      output:
+        - risk:tool:software
+
+  - name: ex.threatfox.search
+    descr: Searches for indicators matching a user-defined query
+    perms:
+      - [ex, threatfox, user]
+    cmdargs:
+      - - --query
+        - type: string
+          help: Yield the newly created nodes instead of the inbound nodes
+      - - --yield
+        - type: bool
+          default: false
+          action: store_true
+          help: Yield the newly created nodes instead of the inbound nodes
+      - - --debug
+        - type: bool
+          default: false
+          action: store_true
+          help: Show verbose debug output.
+      - - --no-refs
+        - type: bool
+          default: false
+          action: store_true
+          help: Do not ingest the references for ingested indicators (i.e. do not create inet:url nodes)
+    forms:
+      output:
+        - inet:fqdn
+        - inet:url
+        - hash:sha256
+        - hash:md5
+        - inet:server
+
+  - name: ex.threatfox.enrich
+    descr: Enriches inbound nodes with ThreatFox information
+    perms:
+      - [ex, threatfox, user]
+    cmdargs:
+      - - --yield
+        - type: bool
+          default: false
+          action: store_true
+          help: Yield the newly created nodes instead of the inbound nodes
+      - - --debug
+        - type: bool
+          default: false
+          action: store_true
+          help: Show verbose debug output.
+      - - --no-refs
+        - type: bool
+          default: false
+          action: store_true
+          help: Do not ingest the references for ingested indicators (i.e. do not create inet:url nodes)
+    forms:
+      input:
+        - inet:fqdn
+        - inet:url
+        - hash:sha256
+        - hash:md5
+        - inet:server
+      output:
+        - inet:fqdn
+        - inet:url
+        - hash:sha256
+        - hash:md5
+        - inet:server
