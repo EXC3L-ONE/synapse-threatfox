@@ -80,10 +80,13 @@ function parseIndicators(data, no_refs) {
         $type = `{$getTagPrefix()}.type.{$ioc.threat_type}`
         [+#$type]
         
-        for $tag in $ioc.tags { ($ok, $tag) = $lib.trycast(syn:tag, $tag) if ($ok) {
-            $tag = `{$getTagPrefix()}.tag.{$tag}`
-            [+#$tag] 
-        }}
+        for $tag in $ioc.tags {
+            ($ok, $tag) = $lib.trycast(syn:tag, $tag) 
+            if ($ok) {
+                $tag = `{$getTagPrefix()}.tag.{$tag}`
+                [+#$tag] 
+            }
+        }
 
         if ($no_refs) { 
             return($lib.null) 

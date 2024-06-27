@@ -11,5 +11,5 @@ $data = $lib.false
 $data = $api.enrichIndicator($cmdopts.query)
 
 if ($data) {
-    divert $cmdopts.yield $privsep.parseIndicators($data)
+    divert $cmdopts.yield $privsep.parseIndicators($data, no_refs=$cmdopts.no_refs)
 }
