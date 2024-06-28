@@ -59,8 +59,8 @@ function parseIndicators(data, no_refs) {
 
     for $ioc in $data.data {
         switch $ioc.ioc_type {
-            "domain": { ($ok, $fqdn) = $lib.trycast(inet:fqdn, $ioc.ioc) if ($ok) { yield [inet:fqdn = $fqdn] } }
-            "url": { ($ok, $url) = $lib.trycast(inet:url, $ioc.ioc) if ($ok) { yield [inet:url = $url] } }
+            "domain": { ($ok, $fqdn) = $lib.trycast(inet:fqdn, $ioc.ioc) if ($ok) { [inet:fqdn = $fqdn] } }
+            "url": { ($ok, $url) = $lib.trycast(inet:url, $ioc.ioc) if ($ok) { [inet:url = $url] } }
             "sha256_hash": { ($ok, $sha256) = $lib.trycast(hash:sha256, $ioc.ioc) if ($ok) { [hash:sha256 = $sha256] } }
             "md5_hash": { ($ok, $md5) = $lib.trycast(hash:md5, $ioc.ioc) if ($ok) { [hash:md5 = $md5] } }
             "ip:port": { $val = $lib.str.concat("tcp://", $ioc.ioc)  ($ok, $serv) = $lib.trycast(inet:server, $val) if ($ok) { [inet:server =  $serv]} }
