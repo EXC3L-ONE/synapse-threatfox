@@ -3,7 +3,7 @@ This Synapse Rapid Power-up adds support for enriching observables using [Threat
 
 ---
 ## Usage
-There are 4 commands available: 
+There are 5 commands available: 
 - `ex.threatfox.ingest.indicators`
     - Ingest recently reported indicators
 - `ex.threatfox.ingest.indicators`
