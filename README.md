@@ -10,6 +10,8 @@ There are 4 commands available:
     - Ingest all malware profiles from ThreatFox
 - `ex.threatfox.enrich`
     - Enrich inbound nodes using the ThreatFox API
+- `ex.threatfox.search`
+    - Search the ThreatFox database for a user-defined string
 
 - `ex.threatfox.setup.tagprefix`
     - Setup Threatfox tag prefix
