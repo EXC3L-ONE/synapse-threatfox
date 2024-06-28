@@ -49,6 +49,7 @@ function parseMalwareProfiles(data) {
         [risk:tool:software=$tool_node :soft:names=($alt_names) :tag=$tag]
 
         [<(seen)+ { yield $srcnode }]
+        | uniq
     }
 }
 
@@ -102,6 +103,7 @@ function parseIndicators(data, no_refs) {
                 if ($ioc.first_seen_utc != $lib.null) {[:time=$ioc.first_seen_utc]}
             }]
         }
+        | uniq
 
     }
 }
