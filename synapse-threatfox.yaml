@@ -1,5 +1,5 @@
 name: ex-threatfox
-version: 1.0.1
+version: 1.0.2
 synapse_minversion: [2, 140, 0]
 desc: The ex-threatfox package provides an interface to ingest indicators and malware families from the ThreatFox API.
 
@@ -56,13 +56,6 @@ commands:
           default: false
           action: store_true
           help: Do not ingest the references for ingested indicators (i.e. do not create inet:url nodes)
-    forms:
-      output:
-        - inet:fqdn
-        - inet:url
-        - hash:sha256
-        - hash:md5
-        - inet:server
 
   - name: ex.threatfox.ingest.malware
     descr: Ingest malware family information from ThreatFox
@@ -79,9 +72,6 @@ commands:
           default: false
           action: store_true
           help: Show verbose debug output.
-    forms:
-      output:
-        - risk:tool:software
 
   - name: ex.threatfox.search
     descr: Searches for indicators matching a user-defined query
@@ -106,13 +96,6 @@ commands:
           default: false
           action: store_true
           help: Do not ingest the references for ingested indicators (i.e. do not create inet:url nodes)
-    forms:
-      output:
-        - inet:fqdn
-        - inet:url
-        - hash:sha256
-        - hash:md5
-        - inet:server
 
   - name: ex.threatfox.enrich
     descr: Enriches inbound nodes with ThreatFox information
@@ -134,19 +117,17 @@ commands:
           default: false
           action: store_true
           help: Do not ingest the references for ingested indicators (i.e. do not create inet:url nodes)
-    forms:
-      input:
-        - inet:fqdn
-        - inet:url
-        - hash:sha256
-        - hash:md5
-        - inet:server
-      output:
-        - inet:fqdn
-        - inet:url
-        - hash:sha256
-        - hash:md5
-        - inet:server
+    cmdinputs:
+      - form: inet:fqdn
+        help: Enrich a fqdn.
+      - form: inet:url
+        help: Enrich a URL.
+      - form: hash:sha256
+        help: Enrich a sha256 hash.
+      - form: hash:md5
+        help: Enrich a md5 hash.
+      - form: inet:server
+        help: Enrich a server.
 
 optic:
     actions:
